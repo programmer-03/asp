@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Replace 'your-background-image.jpg' with the actual path to your image */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        .main {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(255, 255, 255, 0.8); /* Adjust the background color and opacity */
+            max-width: 400px;
+            margin: 0 auto 100px;
+            padding: 45px;
+            text-align: left;
+            border-radius: 10px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <form action="#">
+            <h2 align = center>Noble Hospital Registeration</h2><hr>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter Username" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" placeholder="Enter your DOB" required>
+
+            <label for="Prescription">Prescription Code:</label>
+            <input type="text" id="password" name="password" placeholder="Enter your prescription id" required
+                title="Password must contain at least one number, one alphabet, one symbol, and be at least 8 characters long">
+
+            <label for="file">Enter Prescription</label>
+            <input type="file" id="file" name="file" placeholder="Prescription" accept="image/jpeg" maxlength="1048576" required>
+            <span id="file"></span>
+
+            <label for="mobile">Contact:</label>
+            <input type="text" id="mobile" name="mobile" placeholder="Enter your Mobile Number" required maxlength="10">
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+
+            <div class="wrap">
+                <button type="button" id="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCTryTp7vsj5pFTZrSa3HkUd0UfulE_jS8",
+            authDomain: "vikramproj-99432.firebaseapp.com",
+            databaseURL: "https://vikramproj-99432-default-rtdb.firebaseio.com",
+            projectId: "vikramproj-99432",
+            storageBucket: "vikramproj-99432.appspot.com",
+            messagingSenderId: "573694715077",
+            appId: "1:573694715077:web:a6b2f2c73e2e8ec9e73cac"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth();
+        
+        
+        document.getElementById('submit').addEventListener('click', (e) => {
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var dob = document.getElementById('dob').value;
+            var password = document.getElementById('password').value;
+            var file = document.getElementById('file').value;
+            var mobile = document.getElementById('mobile').value;
+            var gender = document.getElementById('gender').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // Set user data in the database
+                    return set(ref(database, 'users/' + user.uid), {
+                        username: username,
+                        email: email,
+                        dob: dob,
+                        mobile: mobile,
+                        gender: gender,
+                        file: file,
+                    });
+                })
+                .then(() => {
+                    // Redirect after successful user creation and data update
+                    alert('Registered Successfully!!');
+                    window.location.assign("postreg.html");
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
+        });
+
+        
+    </script>
+</body>
+
+</html>
